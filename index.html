@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;background:#f3f4f7}
+a{color:#4338ca}
+a:hover{color:#362f9e}
+::-webkit-scrollbar{width:8px;height:8px}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#f3f4f7;color:#1c2130;padding-bottom:60px">
+
+  <sc-if value="{{ isSkuView }}" hint-placeholder-val="{{ true }}">
+  <div style="position:sticky;top:0;z-index:20;background:#ffffff;border-bottom:1px solid #e3e5ea;padding:18px 32px;box-shadow:0 1px 2px rgba(16,20,30,0.04)">
+   <div style="max-width:1680px;margin:0 auto;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#4338ca">SAT — Pre-Order Confirmation</div>
+        <div style="font-size:22px;font-weight:700;margin-top:2px">Greenwood International School</div>
+        <div style="font-size:13px;color:#6b7280;margin-top:2px">Deal #61624625330 · AY 2027-28 · Synced from HubSpot · 3 mins ago</div>
+      </div>
+      <button onClick="{{ openEstimate }}" style="font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;border:none;background:#4338ca;color:#fff;cursor:pointer;white-space:nowrap">Create New Estimate</button>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:#6b7280">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:#3f4757;display:inline-block"></span>Pending OC</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:#7a3305;display:inline-block"></span>Edition Change Pending Approval</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:#7f1414;display:inline-block"></span>Dropped</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:#0f5228;display:inline-block"></span>Pre-order Confirmed</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:#12358f;display:inline-block"></span>Pending eQuote Signing</span>
+    </div>
+   </div>
+  </div>
+
+  <div style="position:sticky;top:97px;z-index:19;background:#1c2130;color:#fff;padding:12px 32px">
+   <div style="max-width:1680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <sc-if value="{{ actionMode }}" hint-placeholder-val="{{ false }}">
+      <div style="font-size:13px;color:{{ toolbarTextColor }}"><b>{{ actionLabel }}</b> · select applicable line items · <b>{{ selectedCount }}</b> selected</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onClick="{{ cancelAction }}" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:7px;border:1px solid #3a3f52;background:#242938;color:#cfd2db;cursor:pointer;white-space:nowrap">Cancel</button>
+        <button onClick="{{ continueAction }}" disabled="{{ continueDisabled }}" style="font-size:12px;font-weight:700;padding:8px 16px;border-radius:7px;border:none;background:{{ continueBg }};color:#ffffff;cursor:{{ continueCursor }};white-space:nowrap">Continue</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ actionModeOff }}" hint-placeholder-val="{{ true }}">
+      <div style="font-size:13px;color:{{ toolbarTextColor }}">Choose an action to select line items</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onClick="{{ startDrop }}" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:7px;border:1px solid #3a3f52;background:#242938;color:#f87171;cursor:pointer;white-space:nowrap">Drop</button>
+        <button onClick="{{ startEdition }}" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:7px;border:1px solid #3a3f52;background:#242938;color:#fbbf24;cursor:pointer;white-space:nowrap">Edition Change</button>
+        <button onClick="{{ startPreorder }}" style="font-size:12px;font-weight:700;padding:8px 16px;border-radius:7px;border:none;background:#166534;color:#ffffff;cursor:pointer;white-space:nowrap">Pre-order Confirm</button>
+      </div>
+    </sc-if>
+   </div>
+  </div>
+
+  <div style="padding:18px 32px;max-width:1680px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+    <sc-for list="{{ cards }}" as="card" hint-placeholder-count="3">
+      <div style="background:#ffffff;border:1px solid #e3e5ea;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(16,20,30,0.05)">
+
+        <div style="padding:12px 16px 8px;border-bottom:1px solid #eceef2;display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+          <div style="font-size:{{ fontTitle }};font-weight:700">{{ card.title }}</div>
+          <div style="font-size:{{ fontMeta }};color:#9095a1">{{ card.itemCount }} SKUs</div>
+        </div>
+
+        <sc-for list="{{ card.subSchools }}" as="subschool" hint-placeholder-count="2">
+          <div onClick="{{ subschool.toggle }}" style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border-bottom:1px solid #eceef2;background:#fafbfc">
+            <span style="display:inline-block;transition:transform 0.15s;transform:{{ subschool.chevronRotate }};color:#6b7280;font-size:10px">▶</span>
+            <span style="font-size:{{ fontTitle }};font-weight:700;white-space:nowrap;flex:none">{{ subschool.name }}</span>
+            <span style="font-size:{{ fontMeta }};color:#9095a1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">{{ subschool.gradeNames }} · {{ subschool.itemCount }} SKUs</span>
+            <sc-if value="{{ subschool.editionSummary }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:{{ fontMeta }};color:#4b5160;font-style:italic;white-space:nowrap;flex:none">· {{ subschool.editionSummary }}</span>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ subschool.expanded }}" hint-placeholder-val="{{ false }}">
+          <div style="overflow-x:auto">
+        <div style="display:grid;grid-template-columns:{{ colTemplate }};gap:{{ gapPx }};padding:6px 16px 5px;font-size:{{ fontHeader }};font-weight:600;color:#9095a1;text-transform:uppercase;letter-spacing:0.03em;border-bottom:1px solid #eceef2">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">SKU</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Qty</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Price AY27-28</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Expires on</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Status</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        </div>
+
+        <sc-for list="{{ subschool.sections }}" as="section" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 16px 3px;background:#fafbfc">
+            <span style="font-size:{{ fontGrade }};font-weight:700;color:#4b5160;text-transform:uppercase;letter-spacing:0.02em">{{ section.grade }}</span>
+          </div>
+
+          <sc-for list="{{ section.items }}" as="item" hint-placeholder-count="2">
+            <div style="display:grid;grid-template-columns:{{ colTemplate }};gap:{{ gapPx }};align-items:center;padding:7px 16px;border-bottom:1px solid #f2f3f6;font-size:{{ fontRow }};opacity:{{ item.rowOpacity }};text-decoration:{{ item.rowTextDecoration }}">
+              <span>
+                <sc-if value="{{ actionMode }}" hint-placeholder-val="{{ false }}">
+                  <input type="checkbox" checked="{{ item.checked }}" disabled="{{ item.checkboxDisabled }}" title="{{ item.checkboxTitle }}" onChange="{{ item.toggle }}" style="width:16px;height:16px;accent-color:#4338ca;cursor:pointer">
+                </sc-if>
+              </span>
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                  <span style="font-weight:600;white-space:normal;overflow-wrap:break-word;min-width:0">{{ item.sku }}</span>
+                  <sc-if value="{{ item.kindTag }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size:{{ fontTag }};font-weight:700;border-radius:5px;padding:1px 6px;flex:none;white-space:nowrap;color:{{ item.kindTag.color }};background:{{ item.kindTag.bg }}">{{ item.kindTag.label }}</span>
+                  </sc-if>
+                </span>
+                <sc-if value="{{ item.requestedEditionNote }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:{{ fontTag }};color:#92400e">{{ item.requestedEditionNote }}</span>
+                </sc-if>
+                <sc-if value="{{ item.editionBreakdown }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:flex;flex-wrap:wrap;gap:6px;font-size:{{ fontTag }};font-style:italic;color:#7c5cff">
+                    <sc-for list="{{ item.editionBreakdown }}" as="ed" hint-placeholder-count="4">
+                      <span>{{ ed.label }} - {{ ed.value }},</span>
+                    </sc-for>
+                  </span>
+                </sc-if>
+                <sc-if value="{{ item.hasAlternates }}" hint-placeholder-val="{{ false }}">
+                  <a href="#" onClick="{{ item.openAlternates }}" style="font-size: {{ fontTag }}; white-space: nowrap; width: fit-content; font-family: Helvetica; font-style: italic; text-decoration-line: none; color: #1C0FDC">View Alternate Products</a>
+                </sc-if>
+              </span>
+              <span style="width: 52px; height: 21px">
+                <sc-if value="{{ item.qtyEditable }}" hint-placeholder-val="{{ false }}">
+                  <input type="number" min="0" value="{{ item.qtyValue }}" onChange="{{ item.setQty }}" style="width:100%;box-sizing:border-box;font-size:{{ fontRow }};padding:4px 6px;border-radius:6px;border:1px solid #d7dae0;background:#fff">
+                </sc-if>
+                <sc-if value="{{ item.qtyEditableOff }}" hint-placeholder-val="{{ true }}">
+                  {{ item.qtyValue }}
+                </sc-if>
+              </span>
+              <span>{{ item.price }}</span>
+              <span style="font-size:{{ fontMeta }}">{{ item.deactivateAY }}</span>
+              <span style="font-size:{{ fontBadge }};font-weight:700;border-radius:999px;padding:3px 8px;display:inline-flex;align-items:center;gap:5px;justify-content:center;border-width:1px;border-style:solid;white-space:normal;line-height:1.25;width:fit-content;color:{{ item.badgeColor }};background:{{ item.badgeBg }};border-color:{{ item.badgeBorder }}">
+                <span style="width:6px;height:6px;border-radius:50%;flex:none;background:{{ item.badgeColor }}"></span>{{ item.statusLabel }}
+              </span>
+              <sc-if value="{{ item.showFlipbook }}" hint-placeholder-val="{{ false }}">
+                <a href="#" onClick="{{ preventDefault }}" style="font-size:{{ fontMeta }};white-space:nowrap">View Books</a>
+              </sc-if>
+            </div>
+          </sc-for>
+        </sc-for>
+          </div>
+          </sc-if>
+        </sc-for>
+
+      </div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(20,22,30,0.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px">
+      <div style="background:#ffffff;border-radius:14px;max-width:480px;width:100%;padding:24px;box-shadow:0 20px 50px rgba(16,20,30,0.25);max-height:86vh;overflow:auto">
+
+        <sc-if value="{{ modalIsDrop }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:17px;font-weight:700;margin-bottom:4px">Drop {{ modalCount }} line item(s)?</div>
+          <div style="font-size:13px;color:#6b7280;margin-bottom:14px">These SKUs will be removed once saved. This cannot be undone from this screen.</div>
+          <div style="border:1px solid #eceef2;border-radius:8px;max-height:200px;overflow:auto;margin-bottom:18px">
+            <sc-for list="{{ modalItems }}" as="mi" hint-placeholder-count="2">
+              <div style="padding:9px 12px;font-size:13px;border-bottom:1px solid #f2f3f6;display:flex;justify-content:space-between"><span>{{ mi.sku }}</span><span style="color:#9095a1">{{ mi.grade }}</span></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button onClick="{{ closeModal }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid #e3e5ea;background:#fff;color:#4b5160;cursor:pointer">Cancel</button>
+            <button onClick="{{ confirmDrop }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:none;background:#991b1b;color:#fff;cursor:pointer">Confirm Drop</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ modalIsEdition }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:17px;font-weight:700;margin-bottom:4px">Request edition change</div>
+          <div style="font-size:13px;color:#6b7280;margin-bottom:14px">For {{ modalCount }} line item(s). Submitted requests follow the standard approval workflow.</div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px;cursor:pointer">
+            <input type="checkbox" checked="{{ editionForm.sameAsLastYear }}" onChange="{{ toggleSameAsLastYear }}" style="width:16px;height:16px;accent-color:#4338ca">
+            Use the same edition sent last year
+          </label>
+          <div style="margin-bottom:12px">
+            <div style="font-size:12px;font-weight:600;color:#4b5160;margin-bottom:5px">Required Edition</div>
+            <input type="text" value="{{ editionForm.requiredEdition }}" onChange="{{ setRequiredEdition }}" disabled="{{ editionForm.sameAsLastYear }}" placeholder="e.g. Ed BAAA" style="width:100%;box-sizing:border-box;font-size:13px;padding:9px 10px;border-radius:7px;border:1px solid #d7dae0">
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="font-size:12px;font-weight:600;color:#4b5160;margin-bottom:5px">Subschool / Grades</div>
+            <input type="text" value="{{ editionForm.subschoolGrades }}" onChange="{{ setSubschoolGrades }}" placeholder="e.g. Class 1 - Section A, B" style="width:100%;box-sizing:border-box;font-size:13px;padding:9px 10px;border-radius:7px;border:1px solid #d7dae0">
+          </div>
+          <div style="margin-bottom:18px">
+            <div style="font-size:12px;font-weight:600;color:#4b5160;margin-bottom:5px">Reason for change</div>
+            <textarea value="{{ editionForm.reason }}" onChange="{{ setReason }}" placeholder="Add context for the approver" rows="3" style="width:100%;box-sizing:border-box;font-size:13px;padding:9px 10px;border-radius:7px;border:1px solid #d7dae0;font-family:inherit;resize:vertical"></textarea>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button onClick="{{ closeModal }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid #e3e5ea;background:#fff;color:#4b5160;cursor:pointer">Cancel</button>
+            <button onClick="{{ submitEdition }}" disabled="{{ editionSubmitDisabled }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:none;background:{{ editionSubmitBg }};color:#fff;cursor:{{ editionSubmitCursor }}">Submit Request</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ modalIsPreorder }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:17px;font-weight:700;margin-bottom:4px">Confirm pre-order for {{ modalCount }} line item(s)?</div>
+          <div style="font-size:13px;color:#6b7280;margin-bottom:14px">Confirmed quantities will be used directly for demand planning.</div>
+          <div style="border:1px solid #eceef2;border-radius:8px;max-height:200px;overflow:auto;margin-bottom:18px">
+            <sc-for list="{{ modalItems }}" as="mi2" hint-placeholder-count="2">
+              <div style="padding:9px 12px;font-size:13px;border-bottom:1px solid #f2f3f6;display:flex;justify-content:space-between"><span>{{ mi2.sku }}</span><span style="color:#9095a1">Qty {{ mi2.qty }}</span></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button onClick="{{ closeModal }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid #e3e5ea;background:#fff;color:#4b5160;cursor:pointer">Cancel</button>
+            <button onClick="{{ confirmPreorder }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:none;background:#166534;color:#fff;cursor:pointer">Confirm Pre-order</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ modalIsAlternates }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:17px;font-weight:700;margin-bottom:4px">Alternate products</div>
+          <div style="font-size:13px;color:#6b7280;margin-bottom:14px">For {{ modalAltSku }}, no inventory available. Consider:</div>
+          <div style="border:1px solid #eceef2;border-radius:8px;padding:4px 0;margin-bottom:18px">
+            <sc-for list="{{ modalAltTitles }}" as="alt" hint-placeholder-count="3">
+              <div style="padding:9px 12px;font-size:13px;border-bottom:1px solid #f2f3f6">{{ alt }}</div>
+            </sc-for>
+          </div>
+          <div style="display:flex;justify-content:flex-end">
+            <button onClick="{{ closeModal }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid #e3e5ea;background:#fff;color:#4b5160;cursor:pointer">Close</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ modalIsSuccess }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:10px 0 4px">
+            <div style="width:52px;height:52px;border-radius:50%;background:#dcfce7;color:#166534;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">✓</div>
+            <div style="font-size:17px;font-weight:700;margin-bottom:6px">Pre-order confirmed</div>
+            <div style="font-size:13px;color:#6b7280;margin-bottom:22px">{{ modalCount }} line item(s) have been confirmed and will feed into demand planning.</div>
+            <button onClick="{{ closeModal }}" style="font-size:13px;font-weight:600;padding:9px 20px;border-radius:8px;border:none;background:#4338ca;color:#fff;cursor:pointer">Done</button>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1c2130;color:#fff;font-size:13px;padding:12px 18px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:200;max-width:420px;text-align:center">{{ toastMessage }}</div>
+  </sc-if>
+
+  </sc-if>
+
+  <sc-if value="{{ isEstimateView }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#ffffff;border-bottom:1px solid #e3e5ea;padding:14px 32px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <a href="#" onClick="{{ backToSkus }}" style="width:34px;height:34px;border-radius:8px;background:#fff1e8;display:flex;align-items:center;justify-content:center;color:#e2661c;text-decoration:none;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12L10 5M3 12L10 19M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+        <div style="font-size:19px;font-weight:700;color:#4338ca">New Estimate</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#dfe2e8;flex:none"></div>
+        <div>
+          <div style="font-size:13px;font-weight:700">Assu Abhibrat</div>
+          <div style="font-size:11px;color:#4338ca">Field Representative</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#ffffff;border-bottom:1px solid #e3e5ea;padding:14px 32px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600">
+      <span data-om-label="Greenwood International School">Greenwood International School | 61624625330</span>
+      <span style="font-weight:400;color:#6b7280">( <a href="#" onClick="{{ preventDefault }}">View Active SKUs</a> )</span>
+    </div>
+
+    <div style="background:#ffffff;padding:22px 60px 18px;display:flex;align-items:flex-start;justify-content:space-between">
+      <sc-for list="{{ estimateSteps }}" as="step" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:120px">
+          <div style="width:34px;height:34px;border-radius:50%;border:2px solid {{ step.circleColor }};background:{{ step.circleBg }};display:flex;align-items:center;justify-content:center">
+            <span style="width:10px;height:10px;border-radius:50%;background:{{ step.circleColor }}"></span>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:{{ step.labelColor }};white-space:nowrap">{{ step.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background:#eef0f3;padding:24px 32px 60px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:16px">{{ estimateStepLabel }}</div>
+
+      <sc-if value="{{ isEstimateStep0 }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#ffffff;border-radius:10px;padding:28px 28px 24px;box-shadow:0 1px 3px rgba(16,20,30,0.06)">
+          <div style="font-size:15px;font-weight:700;margin-bottom:18px">Add Basic School Details</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px 24px">
+            <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px">
+              <div style="font-size:12px;color:#6b7280">Estimate Name<span style="color:#dc2626">*</span></div>
+            </div>
+            <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between">
+              <div style="font-size:12px;color:#6b7280">Product<span style="color:#dc2626">*</span></div>
+              <span style="color:#9095a1">▾</span>
+            </div>
+            <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between">
+              <div style="font-size:12px;color:#6b7280">Board<span style="color:#dc2626">*</span></div>
+              <span style="color:#9095a1">▾</span>
+            </div>
+            <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:12px;color:#6b7280">Service by distributor<span style="color:#dc2626">*</span></div>
+                <div style="font-size:14px;margin-top:2px">No</div>
+              </div>
+              <span style="color:#9095a1">▾</span>
+            </div>
+            <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:12px;color:#6b7280">Type of sale<span style="color:#dc2626">*</span></div>
+                <div style="font-size:14px;margin-top:2px">Renewal</div>
+              </div>
+              <span style="color:#9095a1">▾</span>
+            </div>
+            <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;opacity:0.7">
+              <div>
+                <div style="font-size:12px;color:#9095a1">Number of Years<span style="color:#dc2626">*</span></div>
+                <div style="font-size:14px;margin-top:2px;color:#9095a1">3</div>
+              </div>
+              <span style="color:#9095a1">▾</span>
+            </div>
+          </div>
+          <div style="font-size:12px;color:#dc2626;margin-top:14px">Note: This is an indicative field, flow remains same for all 3 year negotiations</div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="position:sticky;bottom:0;background:#ffffff;border-top:1px solid #e3e5ea;padding:14px 32px;display:flex;justify-content:flex-end;gap:22px;align-items:center">
+      <a href="#" onClick="{{ preventDefault }}" style="color:#1c2130;font-size:14px;font-weight:600;text-decoration:none">Reset</a>
+      <a href="#" onClick="{{ preventDefault }}" style="color:#e2661c;font-size:14px;font-weight:700;text-decoration:none">Save as Draft</a>
+      <button onClick="{{ nextEstimateStep }}" style="font-size:14px;font-weight:700;padding:11px 28px;border-radius:8px;border:none;background:#e2661c;color:#fff;cursor:pointer">Next</button>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1100},&quot;skuDataJson&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Data&quot;,&quot;default&quot;:&quot;{\&quot;items\&quot;:[{\&quot;id\&quot;:\&quot;i1\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Nursery\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Nursery - Propel: Nurture + Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZZ*Z\&quot;,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹410\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending_edition\&quot;},{\&quot;id\&quot;:\&quot;i1\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;JKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;JKG - Propel: Nurture + Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZZ*Z\&quot;,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹410\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending_edition\&quot;},{\&quot;id\&quot;:\&quot;i1\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;SKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;SKG - Propel: Nurture + Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZZ*Z\&quot;,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹410\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending_edition\&quot;},{\&quot;id\&quot;:\&quot;i3\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Nursery\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Early Writing Nursery\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹180\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i3\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;JKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Early Writing LKG\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹180\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i3\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;SKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Early Writing SKG\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹180\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i4\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 1\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 1 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:58,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i8\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 1\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;My Beautiful Life GR 1\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:58,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 2\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 2 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 2\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;My Beautiful Life GR 2\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 3\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 3 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 3\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;My Beautiful Life GR 3\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 4\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 4 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;dropped\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 4\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;My Beautiful Life GR 4\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;dropped\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 5\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 5 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;dropped\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 5\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;My Beautiful Life GR 5\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;dropped\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Click Code Connect 6\&quot;,\&quot;kind\&quot;:\&quot;single_title\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;confirmed\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Click Code Connect 7\&quot;,\&quot;kind\&quot;:\&quot;single_title\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;confirmed\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 8\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Click Code Connect 8\&quot;,\&quot;kind\&quot;:\&quot;single_title\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;confirmed\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Tune Into Grammar (Revised) 6\&quot;,\&quot;kind\&quot;:\&quot;no_inventory\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Tune Into Grammar (Revised) 7\&quot;,\&quot;kind\&quot;:\&quot;no_inventory\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 8\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Tune Into Grammar (Revised) 8\&quot;,\&quot;kind\&quot;:\&quot;no_inventory\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;alternateTitles\&quot;:[\&quot;Know and Grammar Gr 8\&quot;,\&quot;Pinnacle Techbook Gr 8\&quot;]},{\&quot;id\&quot;:\&quot;i12\&quot;,\&quot;family\&quot;:\&quot;lead_foundation\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 6 : Advanced - PCMB - Foundation Series Pro\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:36,\&quot;price\&quot;:\&quot;₹620\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i13\&quot;,\&quot;family\&quot;:\&quot;lead_foundation\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 7 : Advanced - PCMB - Foundation Series Pro\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:34,\&quot;price\&quot;:\&quot;₹620\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i14\&quot;,\&quot;family\&quot;:\&quot;Fluento\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 6 : FLUENTO \&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:28,\&quot;price\&quot;:\&quot;₹1,450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;},{\&quot;id\&quot;:\&quot;i15\&quot;,\&quot;family\&quot;:\&quot;Fluento\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 7 : FLUENTO \&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:25,\&quot;price\&quot;:\&quot;₹1,450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;}]}&quot;},&quot;compactMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;showFlipbookLinks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;skuColumnWidth&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:380,&quot;min&quot;:220,&quot;max&quot;:640,&quot;step&quot;:20,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;columnGap&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:28,&quot;min&quot;:4,&quot;max&quot;:32,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;fontScale&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.3,&quot;min&quot;:0.8,&quot;max&quot;:1.4,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+function parseItems(json) {
+  try {
+    const data = JSON.parse(json || '{}');
+    return (Array.isArray(data.items) ? data.items : []).map(it => ({ ...it }));
+  } catch (e) {
+    return [];
+  }
+}
+
+const FAMILY_TITLES = {
+  main_addon: 'Main & Add-on Books',
+  lead_foundation: 'Lead Foundation',
+  robotics: 'Fluento'
+};
+const FAMILY_ORDER = ['main_addon', 'lead_foundation', 'robotics'];
+const ESTIMATE_STEPS = ['School Details', 'Student Count', 'Main & Addon Books', 'Hardware & Training'];
+
+function normalizeFamily(raw) {
+  const key = (raw || '').toString().trim().toLowerCase().replace(/[\s-]+/g, '_');
+  if (key === 'main_addon' || key === 'lead_foundation') return key;
+  if (key.includes('fluento') || key.includes('robotic')) return 'robotics';
+  return key || 'other';
+}
+
+function titleCaseFamily(key) {
+  return key.split('_').map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ');
+}
+
+const SUB_SCHOOL_ORDER = ['Pre-Primary', 'Primary', 'Middle', 'Secondary', 'Other'];
+function subSchoolForGrade(grade) {
+  const g = (grade || '').toLowerCase();
+  if (['nursery', 'jkg', 'lkg', 'skg'].some(k => g.includes(k))) return 'Pre-Primary';
+  const m = g.match(/class\s*(\d+)/);
+  if (m) {
+    const n = parseInt(m[1], 10);
+    if (n >= 1 && n <= 5) return 'Primary';
+    if (n >= 6 && n <= 8) return 'Middle';
+    if (n >= 9) return 'Secondary';
+  }
+  return 'Other';
+}
+
+function isEditionEligible(it) {
+  return normalizeFamily(it.family) === 'main_addon' && it.kind === 'main';
+}
+
+function parseEditionBreakdown(edition) {
+  if (!edition) return null;
+  const m = edition.match(/^Ed\s+(.{4})$/i);
+  if (!m) return null;
+  const chars = m[1];
+  const labels = ['Core', 'Hindi', 'Coding', 'English'];
+  return labels.map((label, i) => ({ label, value: chars[i] === '*' ? 'NA' : ('Ed ' + chars[i]) }));
+}
+
+const KIND_TAGS = {
+  addon: { label: 'Add-on', color: '#6b7280', bg: '#eef0f3' },
+  single_title: { label: 'Single Title', color: '#0f766e', bg: '#ccfbf1' },
+  no_inventory: { label: 'No Inventory', color: '#ffffff', bg: '#dc2626' }
+};
+
+const STATUS_META = {
+  pending: { label: 'Pending OC', color: '#3f4757', bg: '#e7e9ee', border: '#c3c8d3' },
+  pending_edition: { label: 'Edition Change Pending Approval', color: '#7a3305', bg: '#fde3ad', border: '#e8b654' },
+  dropped: { label: 'Dropped', color: '#7f1414', bg: '#fbc8c8', border: '#ee9494' },
+  confirmed: { label: 'Pre-order Confirmed', color: '#0f5228', bg: '#bcf0cf', border: '#67d494' },
+  equote_pending: { label: 'Pending eQuote Signing', color: '#12358f', bg: '#c3d8fb', border: '#7aa4ee' }
+};
+
+class Component extends DCLogic {
+  state = {
+    items: parseItems(this.props.skuDataJson),
+    selected: {},
+    view: 'skus',
+    estimateStep: 0,
+    pendingAction: null,
+    expandedSubSchools: {},
+    editedQty: {},
+    modal: null,
+    editionForm: { requiredEdition: '', sameAsLastYear: false, subschoolGrades: '', reason: '' },
+    toast: null
+  };
+
+  toggleSelect(id) {
+    this.setState(s => ({ selected: { ...s.selected, [id]: !s.selected[id] } }));
+  }
+
+  setQty(id, value) {
+    const n = Math.max(0, parseInt(value, 10) || 0);
+    this.setState(s => ({ editedQty: { ...s.editedQty, [id]: n } }));
+  }
+
+  startAction(type) {
+    this.setState({ pendingAction: type, selected: {} });
+  }
+
+  cancelAction() {
+    this.setState({ pendingAction: null, selected: {} });
+  }
+
+  toggleSubSchool(key) {
+    this.setState(s => ({ expandedSubSchools: { ...s.expandedSubSchools, [key]: !s.expandedSubSchools[key] } }));
+  }
+
+  openEstimate() {
+    this.setState({ view: 'estimate', estimateStep: 0 });
+  }
+
+  backToSkus() {
+    this.setState({ view: 'skus' });
+  }
+
+  nextEstimateStep() {
+    this.setState(s => ({ estimateStep: Math.min(3, s.estimateStep + 1) }));
+  }
+
+  clearAllSelection() {
+    this.setState({ selected: {} });
+  }
+
+  openModal(type) {
+    let items = this.state.items.filter(it => this.state.selected[it.id]);
+    if (type === 'edition') items = items.filter(isEditionEligible);
+    if (type === 'preorder') items = items.map(it => ({ ...it, qty: this.state.editedQty[it.id] ?? it.qty }));
+    if (!items.length) return;
+    this.setState({
+      modal: { type, items },
+      editionForm: { requiredEdition: '', sameAsLastYear: false, subschoolGrades: '', reason: '' }
+    });
+  }
+
+  closeModal() {
+    this.setState({ modal: null, pendingAction: null, selected: {} });
+  }
+
+  openAlternatesModal(sku, titles) {
+    this.setState({ modal: { type: 'alternates', sku, titles: titles || [] } });
+  }
+
+  confirmDrop() {
+    const modal = this.state.modal;
+    const ids = new Set(modal.items.map(i => i.id));
+    this.setState(s => ({
+      items: s.items.map(it => ids.has(it.id) ? { ...it, status: 'dropped' } : it),
+      selected: {},
+      pendingAction: null,
+      modal: null
+    }));
+    this.showToast(modal.items.length + ' line item(s) marked as dropped.');
+  }
+
+  submitEdition() {
+    const modal = this.state.modal;
+    const form = this.state.editionForm;
+    const ids = new Set(modal.items.map(i => i.id));
+    const requested = form.sameAsLastYear ? 'Same as last year' : form.requiredEdition;
+    this.setState(s => ({
+      items: s.items.map(it => ids.has(it.id) ? { ...it, status: 'pending_edition', requestedEdition: requested } : it),
+      selected: {},
+      pendingAction: null,
+      modal: null
+    }));
+    this.showToast('Edition change request submitted — routed for approval.');
+  }
+
+  confirmPreorder() {
+    const modal = this.state.modal;
+    const qtyById = new Map(modal.items.map(i => [i.id, i.qty]));
+    this.setState(s => ({
+      items: s.items.map(it => qtyById.has(it.id) ? { ...it, status: 'confirmed', qty: qtyById.get(it.id) } : it),
+      selected: {},
+      editedQty: {},
+      pendingAction: null,
+      modal: { type: 'preorder-success', count: modal.items.length }
+    }));
+  }
+
+  setEditionField(field, value) {
+    this.setState(s => ({ editionForm: { ...s.editionForm, [field]: value } }));
+  }
+
+  showToast(message) {
+    this.setState({ toast: { message } });
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => this.setState({ toast: null }), 4000);
+  }
+
+  renderVals() {
+    const compact = this.props.compactMode ?? false;
+    const showFlipbook = this.props.showFlipbookLinks ?? true;
+    const skuW = this.props.skuColumnWidth ?? 420;
+    const gapNum = this.props.columnGap ?? 10;
+    const gapPx = gapNum + 'px';
+    const skuMax = compact ? Math.max(180, skuW - 80) : skuW;
+    const colMax = compact
+      ? [22, skuMax, 40, 84, 84, 122, 90]
+      : [26, skuMax, 48, 98, 98, 140, 96];
+    const colMin = [20, 130, 32, 100, 96, 110, 70];
+    const colTemplate = colMax.map((w, i) => i === colMax.length - 1 ? `minmax(${colMin[i]}px,1fr)` : `minmax(${colMin[i]}px,${w}px)`).join(' ');
+    const minRowWidth = colMin.reduce((a, b) => a + b, 0) + gapNum * (colMin.length - 1);
+
+    const fs = this.props.fontScale ?? 1;
+    const fontTitle = Math.round(14 * fs) + 'px';
+    const fontMeta = Math.round(11 * fs) + 'px';
+    const fontHeader = Math.round(10 * fs) + 'px';
+    const fontGrade = Math.round(11 * fs) + 'px';
+    const fontRow = Math.round(12 * fs) + 'px';
+    const fontTag = Math.round(9 * fs) + 'px';
+    const fontBadge = Math.round(10 * fs) + 'px';
+
+    const enriched = this.state.items.map(it => {
+      const meta = it.pendingEquote ? STATUS_META.equote_pending : (STATUS_META[it.status] || STATUS_META.pending);
+      const family = normalizeFamily(it.family);
+      const hasEdition = family === 'main_addon' && it.kind === 'main';
+      const pendingAction = this.state.pendingAction;
+      let eligible = true, ineligibleReason = '';
+      if (pendingAction === 'edition' && !hasEdition) { eligible = false; ineligibleReason = 'No edition on this SKU'; }
+      else if (it.status === 'dropped' && pendingAction) { eligible = false; ineligibleReason = 'Already dropped'; }
+      return {
+        ...it,
+        family,
+        kindTag: KIND_TAGS[it.kind] || null,
+        editionApplicable: hasEdition,
+        editionDisplay: hasEdition ? it.edition : 'NA',
+        editionColor: hasEdition ? '#4b5160' : '#b7bac2',
+        editionBreakdown: hasEdition ? parseEditionBreakdown(it.edition) : null,
+        statusLabel: meta.label,
+        badgeColor: meta.color,
+        badgeBg: meta.bg,
+        badgeBorder: meta.border,
+        checked: !!this.state.selected[it.id],
+        checkboxDisabled: !eligible,
+        checkboxTitle: ineligibleReason,
+        qtyValue: this.state.editedQty[it.id] ?? it.qty,
+        qtyEditable: pendingAction === 'preorder' && eligible,
+        qtyEditableOff: !(pendingAction === 'preorder' && eligible),
+        setQty: (e) => this.setQty(it.id, e && e.target ? e.target.value : e),
+        hasAlternates: it.kind === 'no_inventory' && Array.isArray(it.alternateTitles) && it.alternateTitles.length > 0,
+        openAlternates: () => this.openAlternatesModal(it.sku, it.alternateTitles),
+        rowOpacity: it.status === 'dropped' ? 0.55 : (pendingAction && !eligible ? 0.45 : 1),
+        rowTextDecoration: it.status === 'dropped' ? 'line-through' : 'none',
+        showFlipbook: !!(showFlipbook && family === 'main_addon' && it.kind === 'main' && it.flipbook),
+        requestedEditionNote: it.requestedEdition ? ('Requested: ' + it.requestedEdition) : null,
+        toggle: () => this.toggleSelect(it.id)
+      };
+    });
+
+    const pendingAction = this.state.pendingAction;
+    const actionMode = !!pendingAction;
+
+    const familyMap = {};
+    enriched.forEach(it => {
+      if (!familyMap[it.family]) familyMap[it.family] = { subOrder: [], subMap: {} };
+      const fam = familyMap[it.family];
+      const sub = subSchoolForGrade(it.grade);
+      if (!fam.subMap[sub]) {
+        fam.subMap[sub] = { name: sub, gradeOrder: [], gradeMap: {} };
+        fam.subOrder.push(sub);
+      }
+      const subObj = fam.subMap[sub];
+      if (!subObj.gradeMap[it.grade]) {
+        subObj.gradeMap[it.grade] = { grade: it.grade, items: [] };
+        subObj.gradeOrder.push(it.grade);
+      }
+      subObj.gradeMap[it.grade].items.push(it);
+    });
+
+    const orderedFamilies = [
+      ...FAMILY_ORDER.filter(f => familyMap[f]),
+      ...Object.keys(familyMap).filter(f => !FAMILY_ORDER.includes(f))
+    ];
+    const cards = orderedFamilies.map(f => {
+      const fam = familyMap[f];
+      const orderedSubs = [
+        ...SUB_SCHOOL_ORDER.filter(s => fam.subMap[s]),
+        ...Object.keys(fam.subMap).filter(s => !SUB_SCHOOL_ORDER.includes(s))
+      ];
+      const subSchools = orderedSubs.map(s => {
+        const subObj = fam.subMap[s];
+        const sections = subObj.gradeOrder.map(g => subObj.gradeMap[g]);
+        const itemCount = sections.reduce((n, sec) => n + sec.items.length, 0);
+        const key = f + '::' + s;
+        const expanded = actionMode || !!this.state.expandedSubSchools[key];
+        const editionItems = sections.flatMap(sec => sec.items).filter(it => it.editionApplicable);
+        let editionSummary = null;
+        if (editionItems.length) {
+          const uniq = [...new Set(editionItems.map(it => it.edition))];
+          editionSummary = uniq.length === 1 ? uniq[0] : 'Mixed editions';
+        }
+        return {
+          name: s,
+          sections,
+          itemCount,
+          expanded,
+          chevronRotate: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
+          toggle: () => this.toggleSubSchool(key),
+          gradeNames: subObj.gradeOrder.join(', '),
+          editionSummary
+        };
+      });
+      const itemCount = subSchools.reduce((n, ss) => n + ss.itemCount, 0);
+      return { id: f, title: FAMILY_TITLES[f] || titleCaseFamily(f), subSchools, itemCount };
+    });
+
+    const selectedCount = enriched.filter(i => i.checked).length;
+    const hasSelection = selectedCount > 0;
+    const actionLabels = { drop: 'Drop', edition: 'Edition Change', preorder: 'Pre-order Confirm' };
+
+    const modal = this.state.modal;
+    const form = this.state.editionForm;
+    const editionValid = form.sameAsLastYear || form.requiredEdition.trim().length > 0;
+    const editionSubmitDisabled = !(editionValid && form.subschoolGrades.trim().length > 0);
+
+    return {
+      cards,
+      colTemplate,
+      minRowWidthPx: minRowWidth + 'px',
+      gapPx,
+      fontTitle,
+      fontMeta,
+      fontHeader,
+      fontGrade,
+      fontRow,
+      fontTag,
+      fontBadge,
+      selectedCount,
+      hasSelection,
+      noSelection: !hasSelection,
+      actionMode,
+      actionModeOff: !actionMode,
+      actionLabel: actionLabels[pendingAction] || '',
+      continueDisabled: !hasSelection,
+      continueCursor: hasSelection ? 'pointer' : 'not-allowed',
+      continueBg: hasSelection ? '#4338ca' : '#3a3f52',
+      startDrop: () => this.startAction('drop'),
+      startEdition: () => this.startAction('edition'),
+      startPreorder: () => this.startAction('preorder'),
+      cancelAction: () => this.cancelAction(),
+      continueAction: () => this.openModal(pendingAction),
+      toolbarTextColor: '#cfd2db',
+
+      modalOpen: !!modal,
+      modalIsDrop: !!modal && modal.type === 'drop',
+      modalIsEdition: !!modal && modal.type === 'edition',
+      modalIsPreorder: !!modal && modal.type === 'preorder',
+      modalIsSuccess: !!modal && modal.type === 'preorder-success',
+      modalIsAlternates: !!modal && modal.type === 'alternates',
+      modalAltSku: modal && modal.sku ? modal.sku : '',
+      modalAltTitles: modal && modal.titles ? modal.titles : [],
+      modalItems: modal && modal.items ? modal.items : [],
+      modalCount: modal ? (modal.count ?? (modal.items ? modal.items.length : 0)) : 0,
+      closeModal: () => this.closeModal(),
+      confirmDrop: () => this.confirmDrop(),
+      confirmPreorder: () => this.confirmPreorder(),
+      submitEdition: (e) => { e.preventDefault(); this.submitEdition(); },
+      editionForm: form,
+      editionSubmitDisabled,
+      editionSubmitBg: editionSubmitDisabled ? '#c7cad1' : '#4338ca',
+      editionSubmitCursor: editionSubmitDisabled ? 'not-allowed' : 'pointer',
+      setRequiredEdition: (e) => this.setEditionField('requiredEdition', e.target.value),
+      toggleSameAsLastYear: () => this.setEditionField('sameAsLastYear', !this.state.editionForm.sameAsLastYear),
+      setSubschoolGrades: (e) => this.setEditionField('subschoolGrades', e.target.value),
+      setReason: (e) => this.setEditionField('reason', e.target.value),
+      toastVisible: !!this.state.toast,
+      toastMessage: this.state.toast ? this.state.toast.message : '',
+      preventDefault: (e) => e.preventDefault(),
+
+      view: this.state.view,
+      isSkuView: this.state.view === 'skus',
+      isEstimateView: this.state.view === 'estimate',
+      openEstimate: () => this.openEstimate(),
+      backToSkus: () => this.backToSkus(),
+      nextEstimateStep: () => this.nextEstimateStep(),
+      estimateSteps: ESTIMATE_STEPS.map((s, i) => ({
+        label: s,
+        isActive: i === this.state.estimateStep,
+        isDone: i < this.state.estimateStep,
+        circleColor: i <= this.state.estimateStep ? '#0f9d58' : '#c7cad1',
+        circleBg: i === this.state.estimateStep ? '#e6f7ee' : '#ffffff',
+        labelColor: i === this.state.estimateStep ? '#1c2130' : '#9095a1',
+        lineColor: i < this.state.estimateStep ? '#0f9d58' : '#dfe2e8'
+      })),
+      estimateStepLabel: ESTIMATE_STEPS[this.state.estimateStep],
+      isEstimateStep0: this.state.estimateStep === 0
+    };
+  }
+}
+</script>
+</body>
+</html>
