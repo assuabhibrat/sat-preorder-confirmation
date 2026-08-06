@@ -35,7 +35,7 @@ a:hover{color:#362f9e}
         <div style="font-size:13px;color:#6b7280;margin-top:2px">Deal #61624625330 · AY 2027-28&nbsp;</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex:none">
-        <button onClick="{{ startProductChange }}" style="font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;border:none;background:#4338ca;color:#fff;cursor:pointer;white-space:nowrap">Product Change/Renewal Action</button>
+        <button onClick="{{ startProductChange }}" style="font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;border:none;background:#4338ca;color:#fff;cursor:pointer;white-space:nowrap">Product Change/Upsell</button>
         <button onClick="{{ openSendModal }}" disabled="{{ sendDisabled }}" title="{{ sendDisabledReason }}" style="font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;border:none;background:{{ sendBtnBg }};color:#fff;cursor:{{ sendBtnCursor }};white-space:nowrap">Send Pre-order Confirmation to School</button>
       </div>
     </div><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -185,6 +185,20 @@ a:hover{color:#362f9e}
     </sc-if>
 
     <sc-if value="{{ groupByGrade }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ hasMissingGradeRows }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#ffffff;border:1px solid #e3e5ea;border-radius:10px;overflow:hidden">
+        <div style="padding:9px 14px;background:#fafbfc;border-bottom:1px solid #eceef2">
+          <span style="font-size:{{ fontTitle }};font-weight:700;text-transform:uppercase;letter-spacing:0.02em;color:#6b7280">Grades with no products</span>
+        </div>
+        <sc-for list="{{ missingGradeRows }}" as="mg" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #f2f3f6">
+            <input type="checkbox" checked="{{ mg.checked }}" onChange="{{ mg.toggle }}" style="width:16px;height:16px;accent-color:#4338ca;cursor:pointer">
+            <span style="font-size:{{ fontRow }};font-weight:600">{{ mg.grade }}</span>
+            <span style="font-size:{{ fontMeta }};color:#9095a1;font-style:italic">No products configured</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
     <sc-for list="{{ gradeCards }}" as="gcard" hint-placeholder-count="4">
       <div style="background:#ffffff;border:1px solid #e3e5ea;border-radius:10px;overflow:hidden">
 
@@ -317,9 +331,12 @@ a:hover{color:#362f9e}
           <div style="font-size:13px;color:#6b7280;margin-bottom:14px">For {{ modalAltSku }}, no inventory available. Select one to swap in:</div>
           <div style="border:1px solid #eceef2;border-radius:8px;padding:4px 0;margin-bottom:10px">
             <sc-for list="{{ modalAltOptions }}" as="alt" hint-placeholder-count="3">
-              <label style="display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13px;border-bottom:1px solid #f2f3f6;cursor:pointer">
-                <input type="radio" name="alt-choice" checked="{{ alt.checked }}" onChange="{{ alt.select }}" style="width:15px;height:15px;accent-color:#4338ca">
-                {{ alt.title }}
+              <label style="display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13px;border-bottom:1px solid #f2f3f6;cursor:pointer;justify-content:space-between">
+                <span style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="alt-choice" checked="{{ alt.checked }}" onChange="{{ alt.select }}" style="width:15px;height:15px;accent-color:#4338ca">
+                  {{ alt.title }}
+                </span>
+                <span style="font-weight:600;color:#4b5160;white-space:nowrap">Rs 220</span>
               </label>
             </sc-for>
           </div>
@@ -340,37 +357,35 @@ a:hover{color:#362f9e}
         </sc-if>
 
         <sc-if value="{{ modalIsProductChange }}" hint-placeholder-val="{{ false }}">
-          <div style="font-size:17px;font-weight:700;margin-bottom:4px">Product Change / Renewal Actioning</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+          
+          <div style="font-size:17px;font-weight:700;margin-bottom:4px">Product Change/Upsell<br></div><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">
             <div style="display:flex;gap:12px;flex-wrap:wrap">
               <div>
-                <div style="font-size: 11px; color: #9095a1; margin-bottom: 3px; font-weight: 800">Board</div>
-                <select value="{{ productChangeBoard }}" onChange="{{ setProductChangeBoard }}" style="font-size:13px;padding:7px 10px;border-radius:7px;border:1px solid #d7dae0;background:#fff;min-width:140px">
-                  <option value="">Select board</option>
-                  <sc-for list="{{ boardOptions }}" as="bd" hint-placeholder-count="3">
-                    <option value="{{ bd }}">{{ bd }}</option>
+                
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <sc-for list="{{ boardPills }}" as="bp" hint-placeholder-count="3">
+                    
                   </sc-for>
-                </select>
+                </div>
               </div>
               <div>
-                <div style="font-size: 11px; color: #9095a1; margin-bottom: 3px; font-weight: 800">Type of sale</div>
-                <select value="{{ productChangeTypeOfSale }}" onChange="{{ setProductChangeTypeOfSale }}" style="font-size:13px;padding:7px 10px;border-radius:7px;border:1px solid #d7dae0;background:#fff;min-width:170px">
-                  <option value="">Select type of sale</option>
-                  <sc-for list="{{ saleTypeOptions }}" as="st" hint-placeholder-count="3">
-                    <option value="{{ st }}">{{ st }}</option>
+                
+                <div style="font-size: 14px; color: #0C0C0C; margin-bottom: 3px; font-weight: 900; margin-left: 1px">Years of Agreement</div><div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <sc-for list="{{ saleTypePills }}" as="sp" hint-placeholder-count="3">
+                    <a href="#" onClick="{{ sp.select }}" style="font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;background:{{ sp.bg }};color:{{ sp.color }};text-decoration:none;white-space:nowrap">{{ sp.value }}</a>
                   </sc-for>
-                </select>
+                </div>
               </div>
             </div>
-            <div style="font-size: 12px; color: #B68686; font-weight: 700">Distributor flag: <span style="font-weight:700;color:#1c2130">{{ distributorFlag }}</span></div>
+            
           </div>
-          <div style="font-size: 13px; color: #6b7280; margin-bottom: 14px; font-weight: 600">Choose one product for each sub-school covering the selected line items.</div>
-          <div style="border:1px solid #eceef2;border-radius:8px;margin-bottom:16px">
+          
+          <div style="font-size: 17px; font-weight: 600; margin-bottom: 4px">Step 1 : Product Change<br></div><div style="font-size: 13px; color: #6b7280; margin-bottom: 14px; font-weight: 600">Select the product you want to change to</div><div style="border:1px solid #eceef2;border-radius:8px;margin-bottom:16px">
             <sc-for list="{{ productChangeSubschoolRows }}" as="pr" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-bottom:1px solid #f2f3f6">
                 <div>
                   <div style="font-size:13px;font-weight:600">{{ pr.subschool }}</div>
-                  <div style="font-size:12px;color:#6b7280">{{ pr.count }} line item(s) selected</div>
+                  <div style="font-size:12px;color:#6b7280">Grades: {{ pr.gradesLabel }}</div>
                 </div>
                 <div style="display:flex;align-items:center;gap:10px">
                   <span style="font-size: 12px; font-weight: 900; color: #6b7280; border-radius: 999px; padding: 6px 12px; white-space: nowrap; background-color: #DFAE18">Current: {{ pr.currentProductLabel }}</span>
@@ -386,41 +401,50 @@ a:hover{color:#362f9e}
             </sc-for>
           </div>
 
-          <div style="font-size:13px;font-weight:600;margin-bottom:8px">Add product for a new grade</div>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
-            <sc-for list="{{ productChangeNewRows }}" as="row" hint-placeholder-count="0">
-              <div style="display:flex;align-items:flex-start;gap:8px">
-                <div style="flex:1">
-                  <div style="font-size:11px;color:#9095a1;margin-bottom:3px">Sub-school(s)</div>
-                  <select multiple="{{ true }}" disabled="{{ row.subschoolsDisabled }}" onChange="{{ row.setSubschools }}" style="width:100%;box-sizing:border-box;font-size:13px;padding:6px 8px;border-radius:7px;border:1px solid #d7dae0;height:72px">
-                    <sc-for list="{{ row.subschoolsOptions }}" as="opt" hint-placeholder-count="4">
-                      <option value="{{ opt.value }}" selected="{{ opt.selected }}">{{ opt.value }}</option>
-                    </sc-for>
-                  </select>
-                </div>
-                <div style="flex:1">
-                  <div style="font-size:11px;color:#9095a1;margin-bottom:3px">Grade(s)</div>
-                  <select multiple="{{ true }}" disabled="{{ row.gradesDisabled }}" onChange="{{ row.setGrades }}" style="width:100%;box-sizing:border-box;font-size:13px;padding:6px 8px;border-radius:7px;border:1px solid #d7dae0;height:72px">
-                    <sc-for list="{{ row.gradesOptions }}" as="opt2" hint-placeholder-count="4">
-                      <option value="{{ opt2.value }}" selected="{{ opt2.selected }}">{{ opt2.value }}</option>
-                    </sc-for>
-                  </select>
-                </div>
-                <div style="flex:1">
-                  <div style="font-size:11px;color:#9095a1;margin-bottom:3px">Product</div>
-                  <select value="{{ row.product }}" onChange="{{ row.setProduct }}" style="width:100%;box-sizing:border-box;font-size:13px;padding:7px 8px;border-radius:7px;border:1px solid #d7dae0;background:#fff">
-                    <option value="">New Product</option>
-                    <sc-for list="{{ productOptions }}" as="popt2" hint-placeholder-count="3">
-                      <option value="{{ popt2 }}">{{ popt2 }}</option>
-                    </sc-for>
-                  </select>
-                  <a href="#" onClick="{{ row.remove }}" style="font-size:12px;color:#b91c1c;white-space:nowrap;display:inline-block;margin-top:4px">Remove</a>
-                </div>
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px">Step 2: Grade Upsell</div>
+
+          <sc-if value="{{ hasUpsellCard }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size: 13px; color: #6b7280; margin-bottom: 14px; font-weight: 600">Select the product you want to upsell</div><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border:1px solid #eceef2;border-radius:8px;margin-bottom:14px">
+              <div>
+                <div style="font-size:12px;color:#6b7280">Grades: {{ upsellCard.gradesLabel }}</div>
               </div>
-            </sc-for>
+              <div style="display:flex;align-items:center;gap:10px">
+                <select value="{{ upsellCard.product }}" onChange="{{ upsellCard.setProduct }}" style="font-size:13px;font-weight:600;padding:7px 10px;border-radius:7px;border:1px solid #4338ca;background:#eef0ff;color:#4338ca;min-width:150px">
+                  <option value="">New Product</option>
+                  <sc-for list="{{ productOptions }}" as="upopt" hint-placeholder-count="3">
+                    <option value="{{ upopt }}">{{ upopt }}</option>
+                  </sc-for>
+                </select>
+                <a href="#" onClick="{{ upsellCard.remove }}" style="font-size:12px;color:#b91c1c;white-space:nowrap">Remove</a>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ hasUpsellCard }}" hint-placeholder-val="{{ false }}">
+          </sc-if>
+
+          <sc-if value="{{ noUpsellCard }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px">
+            <div style="flex:1">
+              <div style="font-size:11px;color:#9095a1;margin-bottom:3px">Sub-school(s)</div>
+              <select multiple="{{ true }}" disabled="{{ upsellDraftSubschoolsDisabled }}" onChange="{{ setUpsellDraftSubschools }}" style="width:100%;box-sizing:border-box;font-size:13px;padding:6px 8px;border-radius:7px;border:1px solid #d7dae0;height:72px">
+                <sc-for list="{{ upsellDraftSubschoolsOptions }}" as="opt" hint-placeholder-count="4">
+                  <option value="{{ opt.value }}" selected="{{ opt.selected }}">{{ opt.value }}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:11px;color:#9095a1;margin-bottom:3px">Grade(s)</div>
+              <select multiple="{{ true }}" disabled="{{ upsellDraftGradesDisabled }}" onChange="{{ setUpsellDraftGrades }}" style="width:100%;box-sizing:border-box;font-size:13px;padding:6px 8px;border-radius:7px;border:1px solid #d7dae0;height:72px">
+                <sc-for list="{{ upsellDraftGradesOptions }}" as="opt2" hint-placeholder-count="4">
+                  <option value="{{ opt2.value }}" selected="{{ opt2.selected }}">{{ opt2.value }}</option>
+                </sc-for>
+              </select>
+            </div>
           </div>
-          <div style="font-size: 11px; color: #9095a1; margin-bottom: 14px; font-weight: 600">Choose either whole subschool or specific grades to add new product</div>
-          <button onClick="{{ addProductChangeRow }}" style="font-size:12px;font-weight:600;padding:7px 12px;border-radius:7px;border:1px dashed #c7cad1;background:#fafbfc;color:#4b5160;cursor:pointer;margin-bottom:18px">+ Add grade</button>
+          <div style="font-size: 11px; color: #9095a1; margin-bottom: 14px; font-weight: 600">Choose either whole subschool or specific grades, then add to build the group</div>
+          <button onClick="{{ commitUpsellDraft }}" style="font-size:12px;font-weight:600;padding:7px 12px;border-radius:7px;border:1px dashed #c7cad1;background:#fafbfc;color:#4b5160;cursor:pointer;margin-bottom:18px">+ Add</button>
+          </sc-if>
 
           <div style="display:flex;justify-content:flex-end;gap:10px">
             <button onClick="{{ closeProductChangeModal }}" style="font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid #e3e5ea;background:#fff;color:#4b5160;cursor:pointer">Cancel</button>
@@ -700,7 +724,7 @@ a:hover{color:#362f9e}
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1100},&quot;skuDataJson&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Data&quot;,&quot;default&quot;:&quot;{     \&quot;items\&quot;: [         {             \&quot;id\&quot;: \&quot;i1\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Nursery\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Nursery - Propel: Nurture + Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZZ*Z\&quot;,             \&quot;qty\&quot;: 42,             \&quot;price\&quot;: \&quot;₹410\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 30-31\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;new\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i1\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;JKG\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;JKG - Propel: Nurture + Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZZ*Z\&quot;,             \&quot;qty\&quot;: 42,             \&quot;price\&quot;: \&quot;₹410\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;changed\&quot;,             \&quot;previousSku\&quot;: \&quot;JKG - Propel: Nurture + Hindi\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i1\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;SKG\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;SKG - Propel: Nurture + Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZZ*Z\&quot;,             \&quot;qty\&quot;: 42,             \&quot;price\&quot;: \&quot;₹410\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i3\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Nursery\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Early Writing Nursery\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 42,             \&quot;price\&quot;: \&quot;₹180\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i3\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;JKG\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Early Writing LKG\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 42,             \&quot;price\&quot;: \&quot;₹180\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i3\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;SKG\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Early Writing SKG\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 42,             \&quot;price\&quot;: \&quot;₹180\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i4\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 1\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 1 - Propel: EVS, Maths, English, Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZA*Z\&quot;,             \&quot;qty\&quot;: 58,             \&quot;price\&quot;: \&quot;₹450\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 30-31\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i8\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 1\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;My Beautiful Life GR 1\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 58,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 30-31\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i9\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 2\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 2 - Propel: EVS, Maths, English, Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZA*Z\&quot;,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹450\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 30-31\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 2\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;My Beautiful Life GR 2\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 30-31\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i9\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 3\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 3 - Propel: EVS, Maths, English, Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZA*Z\&quot;,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹450\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 30-31\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 3\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;My Beautiful Life GR 3\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 30-31\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i9\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 4\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 4 - Propel: EVS, Maths, English, Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZA*Z\&quot;,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹450\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;dropped\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 4\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;My Beautiful Life GR 4\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;dropped\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i9\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 5\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 5 - Propel: EVS, Maths, English, Hindi\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: \&quot;Ed ZA*Z\&quot;,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹450\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: true,             \&quot;status\&quot;: \&quot;dropped\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 5\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;My Beautiful Life GR 5\&quot;,             \&quot;kind\&quot;: \&quot;addon\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;dropped\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 6\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot; Click Code Connect 6\&quot;,             \&quot;kind\&quot;: \&quot;single_title\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 7\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot; Click Code Connect 7\&quot;,             \&quot;kind\&quot;: \&quot;single_title\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 8\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot; Click Code Connect 8\&quot;,             \&quot;kind\&quot;: \&quot;single_title\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;confirmed\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 6\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot; Tune Into Grammar (Revised) 6\&quot;,             \&quot;kind\&quot;: \&quot;no_inventory\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;alternateTitles\&quot;: [                 \&quot;Know and Grammar Gr 6\&quot;,                 \&quot;Pinnacle Techbook Gr 6\&quot;             ],             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 7\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot; Tune Into Grammar (Revised) 7\&quot;,             \&quot;kind\&quot;: \&quot;no_inventory\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i11\&quot;,             \&quot;family\&quot;: \&quot;main_addon\&quot;,             \&quot;grade\&quot;: \&quot;Class 8\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot; Tune Into Grammar (Revised) 8\&quot;,             \&quot;kind\&quot;: \&quot;no_inventory\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 51,             \&quot;price\&quot;: \&quot;₹190\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;alternateTitles\&quot;: [                 \&quot;Know and Grammar Gr 8\&quot;,                 \&quot;Pinnacle Techbook Gr 8\&quot;             ],             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Propel\&quot;         },         {             \&quot;id\&quot;: \&quot;i12\&quot;,             \&quot;family\&quot;: \&quot;lead_foundation\&quot;,             \&quot;grade\&quot;: \&quot;Class 6\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 6 : Advanced - PCMB - Foundation Series Pro\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 36,             \&quot;price\&quot;: \&quot;₹620\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Pinnacle\&quot;         },         {             \&quot;id\&quot;: \&quot;i13\&quot;,             \&quot;family\&quot;: \&quot;lead_foundation\&quot;,             \&quot;grade\&quot;: \&quot;Class 7\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 7 : Advanced - PCMB - Foundation Series Pro\&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 34,             \&quot;price\&quot;: \&quot;₹620\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Pinnacle\&quot;         },         {             \&quot;id\&quot;: \&quot;i14\&quot;,             \&quot;family\&quot;: \&quot;Fluento\&quot;,             \&quot;grade\&quot;: \&quot;Class 6\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 6 : FLUENTO \&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 28,             \&quot;price\&quot;: \&quot;₹1,450\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Pinnacle\&quot;         },         {             \&quot;id\&quot;: \&quot;i15\&quot;,             \&quot;family\&quot;: \&quot;Fluento\&quot;,             \&quot;grade\&quot;: \&quot;Class 7\&quot;,             \&quot;pendingEquote\&quot;: false,             \&quot;sku\&quot;: \&quot;Class 7 : FLUENTO \&quot;,             \&quot;kind\&quot;: \&quot;main\&quot;,             \&quot;edition\&quot;: null,             \&quot;qty\&quot;: 25,             \&quot;price\&quot;: \&quot;₹1,450\&quot;,             \&quot;deactivateAY\&quot;: \&quot;AY 29-30\&quot;,             \&quot;flipbook\&quot;: false,             \&quot;status\&quot;: \&quot;pending\&quot;,             \&quot;changeStatus\&quot;: \&quot;unchanged\&quot;,             \&quot;currentProduct\&quot;: \&quot;Pinnacle\&quot;         }     ],     \&quot;schoolEmail\&quot;: \&quot;principal@greenwoodintl.edu\&quot;,     \&quot;instructionsText\&quot;: \&quot;1. Review each SKU's quantity and edition breakdown before taking any action.\\n2. Use Drop for SKUs no longer needed this term to deactivate the SKUs directly in hubspot.This is irreversible.\\n3. Use Edition Change to request a different edition — approval required.\\n4. Confirm quantities accurately; quantities and SKU will be fixed for upcoming ordering season and will be used for demand planning.\\n5. Send to School button will enable only after all eligible SKUs are pre-order confirmed.\\n6. Check Group School Allocation to align editions across sister Deal IDs.\&quot;,     \&quot;groupAllocations\&quot;: [         {             \&quot;dealId\&quot;: \&quot;61624631120\&quot;,             \&quot;schoolName\&quot;: \&quot;Greenwood Riverside Campus\&quot;,             \&quot;editionAssigned\&quot;: \&quot;Ed BAAA\&quot;,             \&quot;preorderLink\&quot;: \&quot;#deal-61624631120\&quot;         },         {             \&quot;dealId\&quot;: \&quot;61624632980\&quot;,             \&quot;schoolName\&quot;: \&quot;Greenwood Hills Campus\&quot;,             \&quot;editionAssigned\&quot;: \&quot;Ed BAAB\&quot;,             \&quot;preorderLink\&quot;: \&quot;#deal-61624632980\&quot;         },         {             \&quot;dealId\&quot;: \&quot;61624634410\&quot;,             \&quot;schoolName\&quot;: \&quot;Greenwood North Campus\&quot;,             \&quot;editionAssigned\&quot;: \&quot;Mixed editions\&quot;,             \&quot;preorderLink\&quot;: \&quot;#deal-61624634410\&quot;         }     ] }&quot;},&quot;compactMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;showFlipbookLinks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;skuColumnWidth&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:380,&quot;min&quot;:220,&quot;max&quot;:640,&quot;step&quot;:20,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;columnGap&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:28,&quot;min&quot;:4,&quot;max&quot;:32,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;fontScale&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.3,&quot;min&quot;:0.8,&quot;max&quot;:1.4,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1100},&quot;skuDataJson&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Data&quot;,&quot;default&quot;:&quot;{\&quot;items\&quot;:[{\&quot;id\&quot;:\&quot;i1\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Nursery\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Nursery - Propel: Nurture + Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZZ*Z\&quot;,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹410\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;changed\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i1\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;JKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;JKG - Propel: Nurture + Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZZ*Z\&quot;,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹410\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;changed\&quot;,\&quot;previousSku\&quot;:\&quot;JKG - Propel: Nurture + Hindi\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i1\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;SKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;SKG - Propel: Nurture + Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZZ*Z\&quot;,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹410\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;confirmed\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i3\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Nursery\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Early Writing Nursery\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹180\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i3\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;JKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Early Writing LKG\&quot;,\&quot;kind\&quot;:\&quot;no_inventory\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹180\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;alternateTitles\&quot;:[{\&quot;title\&quot;:\&quot;Know and Grammar Gr 6\&quot;,\&quot;price\&quot;:\&quot;Rs 320\&quot;},{\&quot;title\&quot;:\&quot;Pinnacle Techbook Gr 6\&quot;,\&quot;price\&quot;:\&quot;Rs 380\&quot;}],\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i3\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;SKG\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Early Writing SKG\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:42,\&quot;price\&quot;:\&quot;₹180\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;confirmed\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i4\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 1\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 1 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:58,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i8\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 1\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Know &amp; Grow With Derek (2023 Edition) 1\&quot;,\&quot;kind\&quot;:\&quot;no_inventory\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:58,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;alternateTitles\&quot;:[{\&quot;title\&quot;:\&quot;Know and Grow Gr 1 2024 Edition\&quot;,\&quot;price\&quot;:\&quot;Rs 300\&quot;},{\&quot;title\&quot;:\&quot;Know and Grow Grade 1 (2025)\&quot;,\&quot;price\&quot;:\&quot;Rs 320\&quot;}],\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 2\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 2 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 2\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Know &amp; Grow With Derek (2023 Edition) 2\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 3\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 3 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 3\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Know &amp; Grow With Derek (2023 Edition) 3\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 30-31\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 4\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 4 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;dropped\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 4\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Know &amp; Grow With Derek (2023 Edition) 4\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;dropped\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i9\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 5\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 5 - Propel: EVS, Maths, English, Hindi\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:\&quot;Ed ZA*Z\&quot;,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:true,\&quot;status\&quot;:\&quot;dropped\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 5\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Know &amp; Grow With Derek (2023 Edition) 5\&quot;,\&quot;kind\&quot;:\&quot;addon\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;dropped\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Click Code Connect 6\&quot;,\&quot;kind\&quot;:\&quot;single_title\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;confirmed\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Click Code Connect 7\&quot;,\&quot;kind\&quot;:\&quot;single_title\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;confirmed\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Tune Into Grammar (Revised) 6\&quot;,\&quot;kind\&quot;:\&quot;no_inventory\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;alternateTitles\&quot;:[{\&quot;title\&quot;:\&quot;Know and Grammar Gr 6\&quot;,\&quot;price\&quot;:\&quot;Rs 320\&quot;},{\&quot;title\&quot;:\&quot;Pinnacle Techbook Gr 6\&quot;,\&quot;price\&quot;:\&quot;Rs 380\&quot;}],\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i11\&quot;,\&quot;family\&quot;:\&quot;main_addon\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot; Tune Into Grammar (Revised) 7\&quot;,\&quot;kind\&quot;:\&quot;no_inventory\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:51,\&quot;price\&quot;:\&quot;₹190\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Propel\&quot;},{\&quot;id\&quot;:\&quot;i12\&quot;,\&quot;family\&quot;:\&quot;lead_foundation\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 6 : Advanced - PCMB - Foundation Series Pro\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:36,\&quot;price\&quot;:\&quot;₹620\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Pinnacle\&quot;},{\&quot;id\&quot;:\&quot;i13\&quot;,\&quot;family\&quot;:\&quot;lead_foundation\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 7 : Advanced - PCMB - Foundation Series Pro\&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:34,\&quot;price\&quot;:\&quot;₹620\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Pinnacle\&quot;},{\&quot;id\&quot;:\&quot;i14\&quot;,\&quot;family\&quot;:\&quot;Fluento\&quot;,\&quot;grade\&quot;:\&quot;Class 6\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 6 : FLUENTO \&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:28,\&quot;price\&quot;:\&quot;₹1,450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Pinnacle\&quot;},{\&quot;id\&quot;:\&quot;i15\&quot;,\&quot;family\&quot;:\&quot;Fluento\&quot;,\&quot;grade\&quot;:\&quot;Class 7\&quot;,\&quot;pendingEquote\&quot;:false,\&quot;sku\&quot;:\&quot;Class 7 : FLUENTO \&quot;,\&quot;kind\&quot;:\&quot;main\&quot;,\&quot;edition\&quot;:null,\&quot;qty\&quot;:25,\&quot;price\&quot;:\&quot;₹1,450\&quot;,\&quot;deactivateAY\&quot;:\&quot;AY 29-30\&quot;,\&quot;flipbook\&quot;:false,\&quot;status\&quot;:\&quot;pending\&quot;,\&quot;changeStatus\&quot;:\&quot;unchanged\&quot;,\&quot;currentProduct\&quot;:\&quot;Pinnacle\&quot;}],\&quot;schoolEmail\&quot;:\&quot;principal@greenwoodintl.edu\&quot;,\&quot;instructionsText\&quot;:\&quot;1. Review each SKU's quantity and edition breakdown before taking any action.\\n2. Use Drop for SKUs no longer needed this term to deactivate the SKUs directly in hubspot.This is irreversible.\\n3. Use Edition Change to request a different edition — approval required.\\n4. Confirm quantities accurately; quantities and SKU will be fixed for upcoming ordering season and will be used for demand planning.\\n5. Send to School button will enable only after all eligible SKUs are pre-order confirmed.\\n6. Check Group School Allocation to align editions across sister Deal IDs.\&quot;,\&quot;groupAllocations\&quot;:[{\&quot;dealId\&quot;:\&quot;61624631120\&quot;,\&quot;schoolName\&quot;:\&quot;Greenwood Riverside Campus\&quot;,\&quot;editionAssigned\&quot;:\&quot;Ed BAAA\&quot;,\&quot;preorderLink\&quot;:\&quot;#deal-61624631120\&quot;},{\&quot;dealId\&quot;:\&quot;61624632980\&quot;,\&quot;schoolName\&quot;:\&quot;Greenwood Hills Campus\&quot;,\&quot;editionAssigned\&quot;:\&quot;Ed BAAB\&quot;,\&quot;preorderLink\&quot;:\&quot;#deal-61624632980\&quot;},{\&quot;dealId\&quot;:\&quot;61624634410\&quot;,\&quot;schoolName\&quot;:\&quot;Greenwood North Campus\&quot;,\&quot;editionAssigned\&quot;:\&quot;Mixed editions\&quot;,\&quot;preorderLink\&quot;:\&quot;#deal-61624634410\&quot;}],\&quot;typeOfSaleOptions\&quot;:[\&quot;Product Change - 3 years\&quot;,\&quot;Product Change/Upsell - Remaining years\&quot;],\&quot;productOptions\&quot;:[\&quot;Propel\&quot;,\&quot;Pinnacle\&quot;,\&quot;Lead\&quot;,\&quot;Single Title\&quot;]}&quot;},&quot;compactMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;showFlipbookLinks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;skuColumnWidth&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:380,&quot;min&quot;:220,&quot;max&quot;:640,&quot;step&quot;:20,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;columnGap&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:28,&quot;min&quot;:4,&quot;max&quot;:32,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;fontScale&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.3,&quot;min&quot;:0.8,&quot;max&quot;:1.4,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 function parseItems(json) {
   try {
     const data = JSON.parse(json || '{}');
@@ -723,11 +747,12 @@ function parseMeta(json) {
       schoolEmail: data.schoolEmail || '',
       instructionsText: data.instructionsText || '',
       groupAllocations: Array.isArray(data.groupAllocations) ? data.groupAllocations : [],
-      productOptions: Array.isArray(data.productOptions) && data.productOptions.length ? data.productOptions : ['Propel', 'Pinnacle', 'Lead'],
-      distributorFlag: data.distributorFlag || 'No'
+      productOptions: Array.isArray(data.productOptions) && data.productOptions.length ? data.productOptions : ['Propel', 'Pinnacle', 'Lead', 'Single Title'],
+      distributorFlag: data.distributorFlag || 'No',
+      typeOfSaleOptions: Array.isArray(data.typeOfSaleOptions) && data.typeOfSaleOptions.length ? data.typeOfSaleOptions : ['Renewal - 3 years', 'Upsell - 2 years', 'Upsell - 1 year']
     };
   } catch (e) {
-    return { schoolEmail: '', instructionsText: '', groupAllocations: [], productOptions: ['Propel', 'Pinnacle', 'Lead'], distributorFlag: 'No' };
+    return { schoolEmail: '', instructionsText: '', groupAllocations: [], productOptions: ['Propel', 'Pinnacle', 'Lead', 'Single Title'], distributorFlag: 'No', typeOfSaleOptions: ['Renewal - 3 years', 'Upsell - 2 years', 'Upsell - 1 year'] };
   }
 }
 
@@ -738,10 +763,10 @@ const FAMILY_TITLES = {
 };
 const FAMILY_ORDER = ['main_addon', 'lead_foundation', 'robotics'];
 const ESTIMATE_STEPS = ['School Details', 'Student Count', 'Main & Addon Books', 'Hardware & Training'];
-const BOARD_OPTIONS = ['CBSE', 'AP SCERT', 'KA SCERT'];
+const BOARD_OPTIONS = ['CBSE'];
 const SALE_TYPE_OPTIONS = ['Renewal - 3 years', 'Upsell - 2 years', 'Upsell - 1 year'];
 const ALL_SUBSCHOOLS = ['Pre-Primary', 'Primary', 'Middle', 'Secondary'];
-const ALL_GRADES = ['Nursery', 'JKG', 'LKG', 'SKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
+const ALL_GRADES = ['Nursery', 'JKG', 'SKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
 
 function normalizeFamily(raw) {
   const key = (raw || '').toString().trim().toLowerCase().replace(/[\s-]+/g, '_');
@@ -754,7 +779,7 @@ function titleCaseFamily(key) {
   return key.split('_').map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ');
 }
 
-const GRADE_RANK = { nursery: 0, jkg: 1, lkg: 2, skg: 3 };
+const GRADE_RANK = { nursery: 0, jkg: 1, skg: 2 };
 function gradeRank(grade) {
   const key = (grade || '').trim().toLowerCase();
   if (key in GRADE_RANK) return GRADE_RANK[key];
@@ -813,7 +838,8 @@ class Component extends DCLogic {
     groupAllocations: parseMeta(this.props.skuDataJson).groupAllocations,
     productOptions: parseMeta(this.props.skuDataJson).productOptions,
     distributorFlag: parseMeta(this.props.skuDataJson).distributorFlag,
-    productChangeForm: { bySubschool: {}, newRows: [], board: '', typeOfSale: '' },
+    typeOfSaleOptions: parseMeta(this.props.skuDataJson).typeOfSaleOptions,
+    productChangeForm: { bySubschool: {}, newRows: [], board: '', typeOfSale: '', upsellDraft: { subschools: [], grades: [], product: '' } },
     estimateProductPrefill: [],
     pendingAlternates: {},
     altModalSelection: '',
@@ -829,6 +855,7 @@ class Component extends DCLogic {
     groupView: 'grade',
     gradeQtyDraft: {},
     expandedGrades: {},
+    selectedMissingGrades: {},
     modal: null,
     toast: null
   };
@@ -868,7 +895,11 @@ class Component extends DCLogic {
   }
 
   cancelAction() {
-    this.setState({ pendingAction: null, selected: {}, expandedGrades: {} });
+    this.setState({ pendingAction: null, selected: {}, expandedGrades: {}, selectedMissingGrades: {} });
+  }
+
+  toggleMissingGrade(grade) {
+    this.setState(s => ({ selectedMissingGrades: { ...s.selectedMissingGrades, [grade]: !s.selectedMissingGrades[grade] } }));
   }
 
   toggleSubSchool(key) {
@@ -923,9 +954,16 @@ class Component extends DCLogic {
   openModal(type) {
     let items = this.state.items.filter(it => this.state.selected[it.id]);
     if (type === 'preorder') items = items.map(it => ({ ...it, qty: this.state.editedQty[it.id] ?? it.qty }));
-    if (!items.length) return;
+    const missingGrades = Object.keys(this.state.selectedMissingGrades).filter(g => this.state.selectedMissingGrades[g]);
+    if (!items.length && !missingGrades.length) return;
     if (type === 'productchange') {
-      this.setState({ modal: { type, items }, productChangeForm: { bySubschool: {}, newRows: [], board: '', typeOfSale: '' } });
+      const newRows = missingGrades.map(g => ({
+        id: 'row' + Date.now() + Math.random(),
+        subschools: [subSchoolForGrade(g)],
+        grades: [g],
+        product: ''
+      }));
+      this.setState({ modal: { type, items, missingGrades }, productChangeForm: { bySubschool: {}, newRows, board: '', typeOfSale: '', upsellDraft: { subschools: [], grades: [], product: '' } } });
       return;
     }
     this.setState({ modal: { type, items } });
@@ -939,18 +977,25 @@ class Component extends DCLogic {
     this.setState(s => ({ productChangeForm: { ...s.productChangeForm, bySubschool: { ...s.productChangeForm.bySubschool, [subschool]: product } } }));
   }
 
-  addProductChangeRow() {
-    this.setState(s => ({ productChangeForm: { ...s.productChangeForm, newRows: [...s.productChangeForm.newRows, { id: 'row' + Date.now() + Math.random(), subschools: [], grades: [], product: '' }] } }));
+  updateUpsellDraft(field, value) {
+    this.setState(s => {
+      const next = { ...s.productChangeForm.upsellDraft, [field]: value };
+      if (field === 'subschools' && value.length > 1) next.grades = next.grades.slice(0, 1);
+      if (field === 'grades' && value.length > 1) next.subschools = next.subschools.slice(0, 1);
+      return { productChangeForm: { ...s.productChangeForm, upsellDraft: next } };
+    });
+  }
+
+  commitUpsellDraft() {
+    this.setState(s => {
+      const d = s.productChangeForm.upsellDraft;
+      if (!d.subschools.length && !d.grades.length) return {};
+      return { productChangeForm: { ...s.productChangeForm, newRows: [{ id: 'row' + Date.now() + Math.random(), subschools: d.subschools, grades: d.grades, product: '' }], upsellDraft: { subschools: [], grades: [], product: '' } } };
+    });
   }
 
   updateProductChangeRow(rowId, field, value) {
-    this.setState(s => ({ productChangeForm: { ...s.productChangeForm, newRows: s.productChangeForm.newRows.map(r => {
-      if (r.id !== rowId) return r;
-      const next = { ...r, [field]: value };
-      if (field === 'subschools' && value.length > 1) next.grades = next.grades.slice(0, 1);
-      if (field === 'grades' && value.length > 1) next.subschools = next.subschools.slice(0, 1);
-      return next;
-    }) } }));
+    this.setState(s => ({ productChangeForm: { ...s.productChangeForm, newRows: s.productChangeForm.newRows.map(r => r.id === rowId ? { ...r, [field]: value } : r) } }));
   }
 
   removeProductChangeRow(rowId) {
@@ -972,11 +1017,11 @@ class Component extends DCLogic {
       const label = (r.subschools.length ? r.subschools.join(', ') : '') + (r.grades.length ? (r.subschools.length ? ' · ' : '') + r.grades.join(', ') : '');
       if (label) prefill.push({ label, product: r.product });
     });
-    this.setState({ estimateProductPrefill: prefill, view: 'estimate', estimateStep: 2, modal: null, pendingAction: null, selected: {} });
+    this.setState({ estimateProductPrefill: prefill, view: 'estimate', estimateStep: 2, modal: null, pendingAction: null, selected: {}, selectedMissingGrades: {} });
   }
 
   closeModal() {
-    this.setState({ modal: null, pendingAction: null, selected: {} });
+    this.setState({ modal: null, pendingAction: null, selected: {}, selectedMissingGrades: {} });
   }
 
   openAlternatesModal(sku, titles, itemId) {
@@ -1076,8 +1121,8 @@ class Component extends DCLogic {
         checkboxDisabled: !eligible,
         checkboxTitle: ineligibleReason,
         qtyValue: this.state.editedQty[it.id] ?? it.qty,
-        qtyEditable: pendingAction === 'preorder' && eligible,
-        qtyEditableOff: !(pendingAction === 'preorder' && eligible),
+        qtyEditable: (pendingAction === 'preorder' || pendingAction === 'productchange') && eligible,
+        qtyEditableOff: !((pendingAction === 'preorder' || pendingAction === 'productchange') && eligible),
         setQty: (e) => this.setQty(it.id, e && e.target ? e.target.value : e),
         hasAlternates: it.kind === 'no_inventory' && Array.isArray(it.alternateTitles) && it.alternateTitles.length > 0,
         pendingAlternate: this.state.pendingAlternates[it.id] || '',
@@ -1179,8 +1224,16 @@ class Component extends DCLogic {
       };
     });
 
+    const gradesWithItems = new Set(this.state.items.map(it => it.grade));
+    const missingGradeRows = pendingAction === 'productchange' ? ALL_GRADES.filter(g => !gradesWithItems.has(g)).map(g => ({
+      grade: g,
+      checked: !!this.state.selectedMissingGrades[g],
+      toggle: () => this.toggleMissingGrade(g)
+    })) : [];
+
     const selectedCount = enriched.filter(i => i.checked).length;
-    const hasSelection = selectedCount > 0;
+    const missingGradesSelectedCount = Object.values(this.state.selectedMissingGrades).filter(Boolean).length;
+    const hasSelection = selectedCount > 0 || missingGradesSelectedCount > 0;
     const actionLabels = { drop: 'Drop', preorder: 'Pre-order Confirm', productchange: 'Product Change/Renewal' };
 
     const preorderEligibleItems = enriched.filter(isPreorderEligible);
@@ -1195,6 +1248,8 @@ class Component extends DCLogic {
     return {
       cards,
       gradeCards,
+      missingGradeRows,
+      hasMissingGradeRows: missingGradeRows.length > 0,
       groupBySubschool,
       groupByGrade,
       setViewSubschool: () => this.setGroupView('subschool'),
@@ -1258,11 +1313,16 @@ class Component extends DCLogic {
       closeInstructions: () => this.closeInstructions(),
       modalAltSku: modal && modal.sku ? modal.sku : '',
       modalAltTitles: modal && modal.titles ? modal.titles : [],
-      modalAltOptions: modal && modal.titles ? modal.titles.map(t => ({
-        title: t,
-        checked: this.state.altModalSelection === t,
-        select: () => this.setAltModalSelection(t)
-      })) : [],
+      modalAltOptions: modal && modal.titles ? modal.titles.map(t => {
+        const title = typeof t === 'string' ? t : t.title;
+        const price = typeof t === 'string' ? '' : (t.price || '');
+        return {
+          title,
+          price,
+          checked: this.state.altModalSelection === title,
+          select: () => this.setAltModalSelection(title)
+        };
+      }) : [],
       altConfirmDisabled: !this.state.altModalSelection,
       altConfirmBg: this.state.altModalSelection ? '#4338ca' : '#c7cad1',
       altConfirmCursor: this.state.altModalSelection ? 'pointer' : 'not-allowed',
@@ -1290,10 +1350,14 @@ class Component extends DCLogic {
       productChangeSubschoolRows: modal && modal.type === 'productchange' ? Array.from(new Set(modal.items.map(i => subSchoolForGrade(i.grade)))).sort().map(ss => {
         const ssItems = modal.items.filter(i => subSchoolForGrade(i.grade) === ss);
         const currentProducts = Array.from(new Set(ssItems.map(i => i.currentProduct).filter(Boolean)));
+        const gradeNames = Array.from(new Set(ssItems.map(i => i.grade)));
         return {
         subschool: ss,
         currentProductLabel: currentProducts.length === 1 ? currentProducts[0] : 'Mixed',
         count: ssItems.length,
+        gradesLabel: gradeNames.join(', '),
+        isPrePrimary: ss === 'Pre-Primary',
+        isNotPrePrimary: ss !== 'Pre-Primary',
         value: this.state.productChangeForm.bySubschool[ss] || (() => {
           const match = modal.items.find(i => subSchoolForGrade(i.grade) === ss && this.state.pendingAlternates[i.id] &&
             this.state.productOptions.some(p => p.toLowerCase() === this.state.pendingAlternates[i.id].toLowerCase()));
@@ -1304,26 +1368,41 @@ class Component extends DCLogic {
       }) : [],
       remainingSubschools: ALL_SUBSCHOOLS.filter(ss => !this.state.items.some(it => subSchoolForGrade(it.grade) === ss)),
       remainingGrades: ALL_GRADES.filter(g => !this.state.items.some(it => it.grade === g)),
-      productChangeNewRows: modal && modal.type === 'productchange' ? this.state.productChangeForm.newRows.map(r => ({
-        id: r.id,
-        subschoolsOptions: ALL_SUBSCHOOLS.filter(ss => !this.state.items.some(it => subSchoolForGrade(it.grade) === ss)).map(ss => ({ value: ss, selected: r.subschools.includes(ss) })),
-        gradesOptions: ALL_GRADES.filter(g => !this.state.items.some(it => it.grade === g)).map(g => ({ value: g, selected: r.grades.includes(g) })),
-        subschoolsDisabled: r.grades.length > 1,
-        gradesDisabled: r.subschools.length > 1,
-        product: r.product,
-        setSubschools: (e) => this.updateProductChangeRow(r.id, 'subschools', Array.from(e.target.selectedOptions).map(o => o.value)),
-        setGrades: (e) => this.updateProductChangeRow(r.id, 'grades', Array.from(e.target.selectedOptions).map(o => o.value)),
-        setProduct: (e) => this.updateProductChangeRow(r.id, 'product', e.target.value),
-        remove: () => this.removeProductChangeRow(r.id)
-      })) : [],
-      addProductChangeRow: () => this.addProductChangeRow(),
+      hasUpsellCard: this.state.productChangeForm.newRows.length > 0,
+      noUpsellCard: this.state.productChangeForm.newRows.length === 0,
+      upsellCard: this.state.productChangeForm.newRows.length ? (() => {
+        const r = this.state.productChangeForm.newRows[0];
+        const gradesLabel = r.grades.length ? r.grades.join(', ') : (r.subschools.length ? r.subschools.join(', ') + ' (all grades)' : '');
+        return {
+          id: r.id,
+          gradesLabel,
+          product: r.product,
+          setProduct: (e) => this.updateProductChangeRow(r.id, 'product', e.target.value),
+          remove: () => this.removeProductChangeRow(r.id)
+        };
+      })() : null,
+      upsellDraftSubschoolsOptions: ALL_SUBSCHOOLS.filter(ss => !this.state.items.some(it => subSchoolForGrade(it.grade) === ss)).map(ss => ({ value: ss, selected: this.state.productChangeForm.upsellDraft.subschools.includes(ss) })),
+      upsellDraftGradesOptions: ALL_GRADES.filter(g => !this.state.items.some(it => it.grade === g)).map(g => ({ value: g, selected: this.state.productChangeForm.upsellDraft.grades.includes(g) })),
+      upsellDraftSubschoolsDisabled: this.state.productChangeForm.upsellDraft.grades.length > 1,
+      upsellDraftGradesDisabled: this.state.productChangeForm.upsellDraft.subschools.length > 1,
+      setUpsellDraftSubschools: (e) => this.updateUpsellDraft('subschools', Array.from(e.target.selectedOptions).map(o => o.value)),
+      setUpsellDraftGrades: (e) => this.updateUpsellDraft('grades', Array.from(e.target.selectedOptions).map(o => o.value)),
+      commitUpsellDraft: () => this.commitUpsellDraft(),
       closeProductChangeModal: () => this.closeModal(),
-      boardOptions: BOARD_OPTIONS,
-      saleTypeOptions: SALE_TYPE_OPTIONS,
-      productChangeBoard: this.state.productChangeForm.board,
-      productChangeTypeOfSale: this.state.productChangeForm.typeOfSale,
-      setProductChangeBoard: (e) => this.setProductChangeField('board', e.target.value),
-      setProductChangeTypeOfSale: (e) => this.setProductChangeField('typeOfSale', e.target.value),
+      boardPills: BOARD_OPTIONS.map(b => ({
+        value: b,
+        active: this.state.productChangeForm.board === b,
+        bg: this.state.productChangeForm.board === b ? '#4338ca' : '#eef0f3',
+        color: this.state.productChangeForm.board === b ? '#ffffff' : '#4b5160',
+        select: () => this.setProductChangeField('board', b)
+      })),
+      saleTypePills: this.state.typeOfSaleOptions.map(st => ({
+        value: st,
+        active: this.state.productChangeForm.typeOfSale === st,
+        bg: this.state.productChangeForm.typeOfSale === st ? '#4338ca' : '#eef0f3',
+        color: this.state.productChangeForm.typeOfSale === st ? '#ffffff' : '#4b5160',
+        select: () => this.setProductChangeField('typeOfSale', st)
+      })),
       distributorFlag: this.state.distributorFlag,
       productChangeConfirmDisabled: !this.state.productChangeForm.board || !this.state.productChangeForm.typeOfSale,
       productChangeConfirmBg: (!this.state.productChangeForm.board || !this.state.productChangeForm.typeOfSale) ? '#c7cad1' : '#4338ca',
